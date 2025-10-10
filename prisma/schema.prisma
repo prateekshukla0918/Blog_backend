@@ -1,0 +1,57 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  blogs     Blog[]
+  comments  Comment[]
+  bookmarks Bookmark[]
+  likes     Like[]
+}
+
+model Blog {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  comments    Comment[]
+  bookmarks   Bookmark[]
+  likes       Like[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+}
+
+model Bookmark {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  blog   Blog @relation(fields: [blogId], references: [id])
+  blogId Int
+}
+
+model Like {
+  id     Int  @id @default(autoincrement())
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+  blog   Blog @relation(fields: [blogId], references: [id])
+  blogId Int
+}
