@@ -5,7 +5,6 @@ const { PrismaClient } = require('@prisma/client');
 
 const app = express();
 const prisma = new PrismaClient();
-const cors = require('cors');
 
 // Allow frontend local dev + production
 app.use(cors({
