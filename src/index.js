@@ -5,8 +5,14 @@ const { PrismaClient } = require('@prisma/client');
 
 const app = express();
 const prisma = new PrismaClient();
+const cors = require('cors');
 
-app.use(cors());
+// Allow frontend local dev + production
+app.use(cors({
+  origin: ['http://localhost:3000', 'https://your-frontend-url.onrender.com'],
+  credentials: true
+}));
+
 app.use(express.json());
 
 // Placeholder for routes (we'll add these next!)
