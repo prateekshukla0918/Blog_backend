@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 // Allow frontend local dev + production
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://your-frontend-url.onrender.com'],
+  origin: ['http://localhost:3000', 'https://your-frontend-url.onrender.com', 'https://blog-frontend-nine-sandy.vercel.app'],
   credentials: true
 }));
 
