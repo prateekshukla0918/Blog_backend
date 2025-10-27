@@ -17,7 +17,13 @@ const createBlog = async (req, res) => {
 const getAllBlogs = async (req, res) => {
   try {
     const blogs = await prisma.blog.findMany({
-      include: { user: { select: { email: true } }, comments: true, likes: true, bookmarks: true }
+      include: { 
+  user: { select: { id: true, email: true } }, 
+  comments: true, 
+  likes: true, 
+  bookmarks: true 
+}
+
     });
     res.json(blogs);
   } catch (err) {
@@ -29,7 +35,12 @@ const getBlogById = async (req, res) => {
   try {
     const blog = await prisma.blog.findUnique({
       where: { id: Number(req.params.id) },
-      include: { user: { select: { email: true } }, comments: true, likes: true, bookmarks: true }
+      include: { 
+  user: { select: { id: true, email: true } }, 
+  comments: true, 
+  likes: true, 
+  bookmarks: true 
+}
     });
     if (!blog) return res.status(404).json({ error: 'Blog not found' });
     res.json(blog);
@@ -41,16 +52,27 @@ const getBlogById = async (req, res) => {
 const updateBlog = async (req, res) => {
   const blogId = Number(req.params.id);
   const { title, description } = req.body;
+  const userId = req.userId;
+
   try {
-    const blog = await prisma.blog.update({
+    const blog = await prisma.blog.findUnique({ where: { id: blogId } });
+    if (!blog) return res.status(404).json({ error: "Blog not found" });
+
+    if (blog.userId !== userId) {
+      return res.status(403).json({ error: "You are not authorized to update this blog" });
+    }
+
+    const updatedBlog = await prisma.blog.update({
       where: { id: blogId },
       data: { title, description }
     });
-    res.json(blog);
+
+    res.json(updatedBlog);
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
 
 const deleteBlog = async (req, res) => {
   const id = Number(req.params.id);
